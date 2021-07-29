@@ -25,7 +25,13 @@
       integrity="sha512-EbdJQSugx0nVWrtyK3JdQQ/03mS3Q1UiAhRtErbwl1YL/+e2hZdlIcSURxxh7WXHTzn83sjlh2rysACoJGfb6g==" 
       crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
+    <!-- Luxon -->
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.0.1/build/global/luxon.min.js" 
+      integrity="sha256-BdqBGuaawDzMtW2Wn9ISUuYKUY/A7d5NVcj6Ix3jwv8=" 
+      crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="main.css" />
+    <script src="travel_time_scale.js"></script>
     <script src="main.js"></script>
 
     <meta charset=utf-8>
@@ -37,6 +43,11 @@
     <div id="left_hand_controls">
       <form id="matrix_chooser">
       </form>
+    </div>
+
+    <div id="right_hand_controls">
+      <div id="travel_time_scale_title"></div>
+      <div id="travel_time_scale_entries"></div>
     </div>
 
   </body>

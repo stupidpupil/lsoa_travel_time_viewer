@@ -3,15 +3,21 @@
   "matrices":[
     {
       "path":"public_arriveby_1105.csv",
-      "name":"Public transport, arriving by 11:05, on Tue 20th July 2021"
+      "name":"Public transport, arriving by 11:05, on Tue 20th July 2021",
+      "time_ref_type": "arriveby",
+      "time_ref": "20210720T110500+0100"
     },
     {
       "path":"public_arriveby_1535.csv",
-      "name":"Public transport, arriving by 15:35, on Tue 20th July 2021"
+      "name":"Public transport, arriving by 15:35, on Tue 20th July 2021",
+      "time_ref_type": "arriveby",
+      "time_ref": "20210720T153500+0100"
     },
     {
       "path":"public_arriveby_2005.csv",
-      "name":"Public transport, arriving by 20:05, on Tue 20th July 2021"
+      "name":"Public transport, arriving by 20:05, on Tue 20th July 2021",
+      "time_ref_type": "arriveby",
+      "time_ref": "20210720T200500+0100"
     }
   ]
 

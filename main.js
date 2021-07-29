@@ -1,49 +1,39 @@
 var lsoa_map;
 var lsoa_layer;
 var matrices_index;
+var matrix_details;
 var travel_time_matrix;
 var destination_lsoa11cd = "W01001835";
 
 
 var get_travel_time_for_origin = function (origin_id) {
-  if(!travel_time_matrix){
+
+  if(origin_id == destination_lsoa11cd){
+    return 0;
+  }
+
+  if(travel_time_matrix == null){
     return NaN;
   }
 
   var destination_index = travel_time_matrix.data[0].indexOf(destination_lsoa11cd);
 
-  if(!destination_index){
+  if(destination_index ==  null){
     return NaN;
   }
 
   var origin_row = travel_time_matrix.data.find(r => r[0] == origin_id);
 
-  if(!origin_row){
+  if(origin_row == null){
     return NaN;
   }
 
   return origin_row[destination_index];
 }
 
-
-var get_colour_for_travel_time = function (travel_time){
-  return isNaN(travel_time) ? "#333333" :
-        typeof(travel_time) != "number" ? "#333333" :
-        travel_time > 300 ? "#d73027" :
-        travel_time > 240 ? "#f46d43" :
-        travel_time > 180 ? "#fdae61" :
-        travel_time > 120 ? "#fee090" :
-        travel_time > 60 ? "#e0f3f8" :
-        travel_time > 45 ? "#abd9e9" :
-        travel_time > 30 ? "#74add1" :
-        "#4575b4"
-
-}
-
 var lsoa_style = function (feature) {
   return {
-      fillColor: 
-        feature.properties.LSOA11CD == destination_lsoa11cd ? "#0000FF" : get_colour_for_travel_time(get_travel_time_for_origin(feature.properties.LSOA11CD)),
+      fillColor: get_colour_for_travel_time(get_travel_time_for_origin(feature.properties.LSOA11CD)),
       weight: 0,
       color: 'white',
       dashArray: '3',
@@ -85,7 +75,10 @@ $(function(){
     var i = $("input[name='matrix']:checked").val();
     travel_time_matrix = null;
     lsoa_layer.resetStyle();
-    $.get("matrices/" + matrices_index.matrices[i].path, travel_time_matrix_fetched);
+
+    matrix_details = matrices_index.matrices[i];
+    draw_travel_time_scale();
+    $.get("matrices/" + matrix_details.path, travel_time_matrix_fetched);
   });
 
 });
