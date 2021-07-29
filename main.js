@@ -1,5 +1,6 @@
 var lsoa_map;
-var lsoa_layer;
+var lsoa_boundaries_layer;
+var lsoa_points_layer;
 var lsoa_details;
 var matrices_index;
 var matrices_cache = {};
@@ -32,12 +33,19 @@ var get_travel_time_for_origin = function (origin_id) {
   return origin_row[destination_index];
 }
 
-var lsoa_style = function (feature) {
+var lsoa_points_style = function (feature) {
   return {
       fillColor: get_colour_for_travel_time(get_travel_time_for_origin(feature.properties.LSOA11CD)),
       weight: 0,
-      color: 'white',
-      dashArray: '3',
+      fillOpacity: 0.8,
+      smoothFactor: 0
+  };
+}
+
+var lsoa_boundaries_style = function (feature) {
+  return {
+      fillColor: get_colour_for_travel_time(get_travel_time_for_origin(feature.properties.LSOA11CD)),
+      weight: 0,
       fillOpacity: 0.7,
       smoothFactor: 0
   };
@@ -46,11 +54,16 @@ var lsoa_style = function (feature) {
 var lsoa_click = function (evt){
   destination_lsoa11cd = evt.target.feature.properties.LSOA11CD;
   update_lsoa11_details();
-  lsoa_layer.resetStyle();
+  lsoa_boundaries_layer.resetStyle();
+  lsoa_points_layer.resetStyle();
 }
 
 var boundaries_loaded = function(boundaries_data){
-  lsoa_layer.addData(boundaries_data);
+  lsoa_boundaries_layer.addData(boundaries_data);
+}
+
+var points_loaded = function(points_data){
+  lsoa_points_layer.addData(points_data);
 }
 
 // Travel Time Matrices index loading
@@ -77,7 +90,8 @@ $(function(){
     $("input[name='matrix']").prop('disabled', true);
     var i = $("input[name='matrix']:checked").val();
     travel_time_matrix = null;
-    lsoa_layer.resetStyle();
+    lsoa_boundaries_layer.resetStyle();
+    lsoa_points_layer.resetStyle();
 
     matrix_details = matrices_index.matrices[i];
     $("#download_matrix").attr('href', "matrices/"+ matrix_details.path);
@@ -108,7 +122,8 @@ var travel_time_matrix_loaded = function(travel_time_matrix_results){
   }
 
   travel_time_matrix = travel_time_matrix_results;
-  lsoa_layer.resetStyle();
+  lsoa_boundaries_layer.resetStyle();
+  lsoa_points_layer.resetStyle();
   $("input[name='matrix']").prop('disabled', false);
 }
 
@@ -136,9 +151,23 @@ $(function() {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(lsoa_map);
 
-  lsoa_layer = L.geoJSON(null, 
+  lsoa_points_layer = L.geoJSON(null, 
     {
-      style: lsoa_style,
+
+      style:lsoa_points_style,
+      onEachFeature: function(feature, layer) {
+        layer.on({
+            click: lsoa_click
+        })},
+
+      pointToLayer: function (feature, latlng) {
+          return L.circle(latlng, {radius:50});
+      }
+    }).addTo(lsoa_map);
+
+  lsoa_boundaries_layer = L.geoJSON(null, 
+    {
+      style: lsoa_boundaries_style,
       onEachFeature: function(feature, layer) {
         layer.on({
             click: lsoa_click
@@ -161,6 +190,7 @@ $(function() {
 
   // Fetch LSOA GeoJSON
   $.getJSON("lsoa11_boundaries.geojson", boundaries_loaded);
+  //$.getJSON("lsoa11_nearest_road_points.geojson", points_loaded);
   $.getJSON("matrices/index.json", matrices_index_loaded);
 
 })
