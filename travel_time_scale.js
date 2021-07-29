@@ -1,6 +1,6 @@
 var travel_time_scale = [
- {max_minutes:Infinity, colour:"#333333"},
- {max_minutes:360, colour:"#a50026"},
+ {max_minutes:Infinity, colour:"#333333", contrast_colour:'#FFFFFF'},
+ {max_minutes:360, colour:"#a50026", contrast_colour:'#FFFFFF'},
  {max_minutes:240, colour:"#d73027"},
  {max_minutes:180, colour:"#f46d43"},
  {max_minutes:150, colour:"#fdae61"},
@@ -9,10 +9,10 @@ var travel_time_scale = [
  {max_minutes:75, colour:"#e0f3f8"},
  {max_minutes:60, colour:"#abd9e9"},
  {max_minutes:45, colour:"#74add1"},
- {max_minutes:30, colour:"#4575b4"},
- {max_minutes:15, colour:"#313695"},
- {max_minutes:0,  colour:"#0000FF"}, // Used for the selected LSOA
- {max_minutes:-Infinity,  colour:"#0000FF"}
+ {max_minutes:30, colour:"#4575b4", contrast_colour:'#FFFFFF'},
+ {max_minutes:15, colour:"#313695", contrast_colour:'#FFFFFF'},
+ {max_minutes:0,  colour:"#0000FF", contrast_colour:'#FFFFFF'}, // Used for the selected LSOA
+ {max_minutes:-Infinity,  colour:"#0000FF", contrast_colour:'#FFFFFF'}
 ].sort(function(a,b){return b.max_minutes - a.max_minutes})
 
 var get_colour_for_travel_time = function (travel_time){
@@ -41,6 +41,14 @@ var draw_travel_time_scale = function(){
   $("#travel_time_scale_midder").empty().append("to get to");
   $("#travel_time_scale_footer").empty().append("by "+ref_time.toLocaleString(luxon.DateTime.TIME_SIMPLE));
 
+  var contrastColour = function(r){
+    if(r.contrast_colour){
+      return r.contrast_colour;
+    }
+
+    return '#000000';
+  }
+
   var prettyScaleLabel = function(max_minutes){
     if(max_minutes == Infinity){
       return "Unknown"
@@ -49,7 +57,8 @@ var draw_travel_time_scale = function(){
   }
 
   var scale_entries = travel_time_scale.slice(0, travel_time_scale.length-2).map( r =>
-    $("<div style='background-color:"+ r.colour +"'>"+ prettyScaleLabel(r.max_minutes) +"</div>"));
+    $("<div style='background-color:"+ r.colour +";color:"+contrastColour(r)+"'>"+ 
+      prettyScaleLabel(r.max_minutes) +"</div>"));
 
   $("#travel_time_scale_entries").empty().append(scale_entries);
 };
