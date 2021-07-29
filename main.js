@@ -6,6 +6,7 @@ var matrix_details;
 var travel_time_matrix;
 var destination_lsoa11cd = "W01001943";
 
+
 var get_travel_time_for_origin = function (origin_id) {
 
   if(origin_id == destination_lsoa11cd){
@@ -72,12 +73,14 @@ var matrices_index_loaded = function (matrices_index_data) {
 
 $(function(){
   $("#matrix_chooser").change(function(evt){
-    $("input[name='matrix']").prop('disabled', true)
+    $("input[name='matrix']").prop('disabled', true);
     var i = $("input[name='matrix']:checked").val();
     travel_time_matrix = null;
     lsoa_layer.resetStyle();
 
     matrix_details = matrices_index.matrices[i];
+    $("#download_matrix").attr('href', "matrices/"+ matrix_details.path);
+
     draw_travel_time_scale();
     fetch_and_load_travel_time_matrix(matrix_details.path);
   });
@@ -105,7 +108,7 @@ var travel_time_matrix_loaded = function(travel_time_matrix_results){
 
   travel_time_matrix = travel_time_matrix_results;
   lsoa_layer.resetStyle();
-  $("input[name='matrix']").prop('disabled', false)
+  $("input[name='matrix']").prop('disabled', false);
 }
 
 var travel_time_matrix_fetched = function(travel_time_matrix_data){
