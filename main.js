@@ -1,11 +1,11 @@
 var lsoa_map;
 var lsoa_layer;
+var lsoa_details;
 var matrices_index;
 var matrices_cache = {};
 var matrix_details;
 var travel_time_matrix;
 var destination_lsoa11cd = "W01001943";
-
 
 var get_travel_time_for_origin = function (origin_id) {
 
@@ -45,6 +45,7 @@ var lsoa_style = function (feature) {
 
 var lsoa_click = function (evt){
   destination_lsoa11cd = evt.target.feature.properties.LSOA11CD;
+  update_lsoa11_details();
   lsoa_layer.resetStyle();
 }
 
@@ -119,6 +120,11 @@ var travel_time_matrix_fetched = function(travel_time_matrix_data){
   });
 }
 
+var update_lsoa11_details = function(){
+  var r = lsoa11_details.data.find(r => r.LSOA11Code == destination_lsoa11cd);
+  $("#travel_time_scale_lsoa11").empty().append(r.LSOA11Code + "<br/> in " + r.MSOA11Name);
+}
+
 
 $(function() {
   lsoa_map = L.map('lsoa_map', {zoomControl: false}).setView([51.7, -3.3], 10);
@@ -144,6 +150,13 @@ $(function() {
   });
 
 
+  $.get("lsoa11_details.csv", function(d){Papa.parse(d, {
+    header: true,
+    complete: function(results) {
+      lsoa11_details = results;
+      update_lsoa11_details();
+    }
+  })})
 
 
   // Fetch LSOA GeoJSON

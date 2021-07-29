@@ -56,10 +56,15 @@ a#download_matrix:visited {
 #right_hand_controls{
   top: 0.5em;
   right: 0.5em;
+  text-align: center;
+  width: 10em;
+}
+
+#travel_time_scale_lsoa11{
+  font-style: italic;
 }
 
 #travel_time_scale_entries div{
-  text-align: center;
   padding: 0em 1em;
 }
 

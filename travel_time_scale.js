@@ -37,7 +37,9 @@ var draw_travel_time_scale = function(){
 
   var ref_time = luxon.DateTime.fromISO(matrix_details.time_ref); 
 
-  $("#travel_time_scale_title").empty().append("Leave at…")
+  $("#travel_time_scale_header").empty().append("Leave at…");
+  $("#travel_time_scale_midder").empty().append("to get to");
+  $("#travel_time_scale_footer").empty().append("by "+ref_time.toLocaleString(luxon.DateTime.TIME_SIMPLE));
 
   var prettyScaleLabel = function(max_minutes){
     if(max_minutes == Infinity){
