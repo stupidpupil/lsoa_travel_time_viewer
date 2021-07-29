@@ -1,0 +1,30 @@
+#lsoa_map{
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+}
+
+.leaflet-tile-pane {
+  filter: grayscale(1.0);
+}
+.leaflet-overlay-pane {
+  mix-blend-mode: multiply;
+}
+.leaflet-overlay-pane path{
+  mix-blend-mode: multiply;
+}
+
+body{
+  font-family: 'Titillium Web', sans-serif;
+}
+
+#left_hand_controls{
+  position: fixed;
+  top: 0.5em;
+  left: 0.5em;
+  padding: 1em;
+  background-color: rgba(255,255,255,0.8);
+  border-radius: 0.5em;
+}
