@@ -1,7 +1,7 @@
 var travel_time_scale = [
  {max_minutes:Infinity, colour:"#333333", contrast_colour:'#FFFFFF'},
  {max_minutes:360, colour:"#a50026", contrast_colour:'#FFFFFF'},
- {max_minutes:240, colour:"#d73027"},
+ {max_minutes:240, colour:"#d73027", contrast_colour:'#FFFFFF'},
  {max_minutes:180, colour:"#f46d43"},
  {max_minutes:150, colour:"#fdae61"},
  {max_minutes:120, colour:"#fee090"},
