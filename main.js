@@ -1,6 +1,7 @@
 var lsoa_map;
 var lsoa_layer;
 var matrices_index;
+var matrices_cache = {};
 var matrix_details;
 var travel_time_matrix;
 var destination_lsoa11cd = "W01001835";
@@ -72,13 +73,14 @@ var matrices_index_loaded = function (matrices_index_data) {
 
 $(function(){
   $("#matrix_chooser").change(function(evt){
+    $("input[name='matrix']").prop('disabled', true)
     var i = $("input[name='matrix']:checked").val();
     travel_time_matrix = null;
     lsoa_layer.resetStyle();
 
     matrix_details = matrices_index.matrices[i];
     draw_travel_time_scale();
-    $.get("matrices/" + matrix_details.path, travel_time_matrix_fetched);
+    fetch_and_load_travel_time_matrix(matrix_details.path);
   });
 
 });
@@ -87,9 +89,24 @@ $(function(){
 // Travel Time Matrix loading
 //
 
+var fetch_and_load_travel_time_matrix = function(path){
+
+  if(matrices_cache[path]){
+    return travel_time_matrix_loaded(matrices_cache[path]);
+  }
+
+  $.get("matrices/" + path, travel_time_matrix_fetched);
+}
+
 var travel_time_matrix_loaded = function(travel_time_matrix_results){
+
+  if(matrices_cache[matrix_details.path] == null){
+    matrices_cache[matrix_details.path] = travel_time_matrix_results;
+  }
+
   travel_time_matrix = travel_time_matrix_results;
   lsoa_layer.resetStyle();
+  $("input[name='matrix']").prop('disabled', false)
 }
 
 var travel_time_matrix_fetched = function(travel_time_matrix_data){
