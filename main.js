@@ -37,7 +37,7 @@ var lsoa_points_style = function (feature) {
   return {
       fillColor: get_colour_for_travel_time(get_travel_time_for_origin(feature.properties.LSOA11CD)),
       weight: 0,
-      fillOpacity: 0.8,
+      fillOpacity: 1.0,
       smoothFactor: 0
   };
 }
@@ -46,7 +46,7 @@ var lsoa_boundaries_style = function (feature) {
   return {
       fillColor: get_colour_for_travel_time(get_travel_time_for_origin(feature.properties.LSOA11CD)),
       weight: 0,
-      fillOpacity: 0.7,
+      fillOpacity: 0.8,
       smoothFactor: 0
   };
 }
@@ -161,9 +161,9 @@ $(function() {
         })},
 
       pointToLayer: function (feature, latlng) {
-          return L.circle(latlng, {radius:50});
+          return L.circle(latlng, {radius:150});
       }
-    }).addTo(lsoa_map);
+    });
 
   lsoa_boundaries_layer = L.geoJSON(null, 
     {
@@ -174,10 +174,14 @@ $(function() {
         })}
     }).addTo(lsoa_map);
 
+  L.control.layers(
+    {}, 
+    {"LSOA Boundaries":lsoa_boundaries_layer, "LSOA Trip Points":lsoa_points_layer},
+    {position:'bottomright', collapsed: false}).addTo(lsoa_map);
+
   $.getJSON("not_wales.geojson", function (not_wales_data) {
     var not_wales_layer = L.geoJSON(not_wales_data, {style:{weight:0,fillColor:'black'}}).addTo(lsoa_map);
   });
-
 
   $.get("lsoa11_details.csv", function(d){Papa.parse(d, {
     header: true,
@@ -190,7 +194,7 @@ $(function() {
 
   // Fetch LSOA GeoJSON
   $.getJSON("lsoa11_boundaries.geojson", boundaries_loaded);
-  //$.getJSON("lsoa11_nearest_road_points.geojson", points_loaded);
+  $.getJSON("lsoa11_nearest_road_points.geojson", points_loaded);
   $.getJSON("matrices/index.json", matrices_index_loaded);
 
 })
