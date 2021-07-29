@@ -20,6 +20,11 @@ body{
   font-family: 'Titillium Web', sans-serif;
 }
 
+a:link, 
+a:active, 
+a:visited {
+  text-decoration: none;
+}
 
 #left_hand_controls, #right_hand_controls{
   position: fixed;
@@ -33,6 +38,7 @@ body{
 #left_hand_controls{
   top: 0.5em;
   left: 0.5em;
+  max-width: 25em;
 }
 
 a#download_matrix:link, 
