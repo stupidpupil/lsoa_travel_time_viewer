@@ -41,6 +41,13 @@ a:visited {
   max-width: 25em;
 }
 
+@keyframes pulse_opacity { from { opacity: 100%; } to { opacity: 20%; }  }
+
+.matrix_choice input:disabled:checked{
+  animation: 0.5s ease-out 0s infinite alternate pulse_opacity;
+}
+
+
 a#download_matrix:link, 
 a#download_matrix:active, 
 a#download_matrix:visited {
