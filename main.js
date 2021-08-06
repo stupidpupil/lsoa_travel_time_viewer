@@ -179,6 +179,15 @@ $(function() {
     {"LSOA Boundaries":lsoa_boundaries_layer, "LSOA Trip Points":lsoa_points_layer},
     {position:'bottomright', collapsed: false}).addTo(lsoa_map);
 
+
+  new L.Control.geocoder({  defaultMarkGeocode: false, position: 'bottomleft' }).on('markgeocode', function(e) {
+    var centre = e.geocode.center;
+    var lsoa = leafletPip.pointInLayer(centre, lsoa_boundaries_layer, true);
+
+    lsoa_map.fitBounds(lsoa[0].getBounds(), {maxZoom: 10});
+    lsoa[0].fireEvent('click');
+  }).addTo(lsoa_map);
+
   $.getJSON("not_wales.geojson", function (not_wales_data) {
     var not_wales_layer = L.geoJSON(not_wales_data, {style:{weight:0,fillColor:'black'}}).addTo(lsoa_map);
   });
