@@ -179,8 +179,13 @@ $(function() {
     {"LSOA Boundaries":lsoa_boundaries_layer, "LSOA Trip Points":lsoa_points_layer},
     {position:'bottomright', collapsed: false}).addTo(lsoa_map);
 
+  var geocoder = new L.Control.Geocoder.Nominatim({ // Bit of a HACK.
+    geocodingQueryParams:{viewbox:"-5.66912337939577,51.3751114295802,-2.65009749848435,53.4357105443111"}});
 
-  new L.Control.geocoder({  defaultMarkGeocode: false, position: 'bottomleft' }).on('markgeocode', function(e) {
+  new L.Control.geocoder({
+    geocoder: geocoder,
+    defaultMarkGeocode: false, 
+    position: 'bottomleft' }).on('markgeocode', function(e) {
     var centre = e.geocode.center;
     var lsoa = leafletPip.pointInLayer(centre, lsoa_boundaries_layer, true);
 
