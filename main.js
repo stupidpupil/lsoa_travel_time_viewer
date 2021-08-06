@@ -8,6 +8,8 @@ var matrix_details;
 var travel_time_matrix;
 var destination_lsoa11cd = "W01001943";
 
+var matrices_root = "https://raw.githubusercontent.com/stupidpupil/wales_ish_r5r_runner/matrix-releases/";
+
 var get_travel_time_for_origin = function (origin_id) {
 
   if(origin_id == destination_lsoa11cd){
@@ -94,7 +96,7 @@ $(function(){
     lsoa_points_layer.resetStyle();
 
     matrix_details = matrices_index.matrices[i];
-    $("#download_matrix").attr('href', "matrices/"+ matrix_details.path);
+    $("#download_matrix").attr('href', matrices_root+ matrix_details.path);
 
     draw_travel_time_scale();
     fetch_and_load_travel_time_matrix(matrix_details.path);
@@ -112,7 +114,7 @@ var fetch_and_load_travel_time_matrix = function(path){
     return travel_time_matrix_loaded(matrices_cache[path]);
   }
 
-  $.get("matrices/" + path, travel_time_matrix_fetched);
+  $.get(matrices_root + path, travel_time_matrix_fetched);
 }
 
 var travel_time_matrix_loaded = function(travel_time_matrix_results){
@@ -209,6 +211,6 @@ $(function() {
   // Fetch LSOA GeoJSON
   $.getJSON("lsoa11_boundaries.geojson", boundaries_loaded);
   $.getJSON("lsoa11_nearest_road_points.geojson", points_loaded);
-  $.getJSON("matrices/index.json", matrices_index_loaded);
+  $.getJSON(matrices_root + "index.json", matrices_index_loaded);
 
 })
