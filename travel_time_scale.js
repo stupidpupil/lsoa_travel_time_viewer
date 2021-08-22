@@ -13,7 +13,16 @@ var travel_time_scale = [
  {max_minutes:15, colour:"#313695", contrast_colour:'#FFFFFF'},
  {max_minutes:0,  colour:"#0000FF", contrast_colour:'#FFFFFF'}, // Used for the selected LSOA
  {max_minutes:-Infinity,  colour:"#0000FF", contrast_colour:'#FFFFFF'}
-].sort(function(a,b){return b.max_minutes - a.max_minutes})
+].
+  sort(function(a,b){return b.max_minutes - a.max_minutes}).
+  map(function(e,i,a){
+    if(a[i+1]){
+      e.min_minutes = a[i+1].max_minutes+1;
+    }else{
+      e.min_minutes = -Infinity;
+    }
+    return e;
+  })
 
 var get_colour_for_travel_time = function (travel_time){
   if(isNaN(travel_time)){
@@ -33,9 +42,17 @@ var get_colour_for_travel_time = function (travel_time){
   return travel_time_scale[tts_i-1].colour;
 };
 
+$(function(){
+  $("#scale_chooser").change(function(evt){
+    draw_travel_time_scale();
+  });
+});
+
 var draw_travel_time_scale = function(){
 
-  var ref_time = luxon.DateTime.fromISO(matrix_details.time_ref); 
+  var scale_choice = $("input[name='scale']:checked").val();
+  var ref_time = luxon.DateTime.fromISO(matrix_details.time_ref);
+  var ref_type = matrix_details.time_ref_type;
 
   $("#travel_time_scale_header").empty().append("Leave at…");
   $("#travel_time_scale_midder").empty().append("to get to");
@@ -49,16 +66,27 @@ var draw_travel_time_scale = function(){
     return '#000000';
   }
 
-  var prettyScaleLabel = function(max_minutes){
-    if(max_minutes == Infinity){
+  var period_format_string = "h'hrs 'mm'min'";
+  var prettyScaleLabel = function(r){
+
+    if (scale_choice == 'period') {
+      if(r.max_minutes == Infinity){
+        return "Unknown"
+      }
+
+      var max_str = luxon.Duration.fromObject({minutes:r.max_minutes}).toFormat(period_format_string);
+      return max_str;
+    }
+
+    if(r.max_minutes == Infinity){
       return "Unknown"
     }
-    return ref_time.minus({minutes:max_minutes}).toLocaleString(luxon.DateTime.TIME_SIMPLE);
+    return ref_time.minus({minutes:r.max_minutes}).toLocaleString(luxon.DateTime.TIME_SIMPLE);
   }
 
   var scale_entries = travel_time_scale.slice(0, travel_time_scale.length-2).map( r =>
     $("<div style='background-color:"+ r.colour +";color:"+contrastColour(r)+"'>"+ 
-      prettyScaleLabel(r.max_minutes) +"</div>"));
+      prettyScaleLabel(r) +"</div>"));
 
   $("#travel_time_scale_entries").empty().append(scale_entries);
 };

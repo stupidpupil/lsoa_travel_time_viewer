@@ -78,3 +78,29 @@ a#download_matrix:visited {
 #smallprint{
   font-size: 0.7em;
 }
+
+
+#scale_chooser{
+  border: 2px #555 solid;
+  padding: 0;
+  border-radius: 1em;
+  margin: 0.5em;
+  display: flex;
+  overflow: hidden;
+  font-size: 0.8em;
+}
+
+#scale_chooser input{
+  display: none;
+}
+
+#scale_chooser label{
+  display: inline-block;
+  width: 50%;
+  color: #999999;
+}
+
+#scale_chooser input:checked + label{
+  background-color: #222277;
+  color: white;
+}
