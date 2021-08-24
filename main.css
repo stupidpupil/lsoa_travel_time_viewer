@@ -51,7 +51,8 @@ a:visited {
 a#download_matrix:link, 
 a#download_matrix:active, 
 a#download_matrix:visited {
-  color:black;
+  color: #722;
+  box-shadow: 0em 0 0.1em rgba(0,0,0,0.5);
   text-decoration: none;
   text-align: center;
   display: block;
