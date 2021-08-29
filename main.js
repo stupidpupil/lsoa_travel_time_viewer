@@ -1,5 +1,6 @@
 var lsoa_map;
 var lsoa_boundaries_layer;
+var outside_boundaries_layer;
 var lsoa_points_layer;
 var lsoa_details;
 var matrices_index;
@@ -176,6 +177,13 @@ $(function() {
         })}
     }).addTo(lsoa_map);
 
+  $.getJSON("not_wales.geojson", function (not_wales_data) {
+    outside_boundaries_layer = L.geoJSON(not_wales_data,
+      {invert:true,
+      style:{weight:0,fillColor:'black'}}
+      ).addTo(lsoa_map);
+  });
+  
   L.control.layers(
     {}, 
     {"LSOA Boundaries":lsoa_boundaries_layer, "LSOA Trip Points":lsoa_points_layer},
@@ -195,9 +203,6 @@ $(function() {
     lsoa[0].fireEvent('click');
   }).addTo(lsoa_map);
 
-  $.getJSON("not_wales.geojson", function (not_wales_data) {
-    var not_wales_layer = L.geoJSON(not_wales_data, {style:{weight:0,fillColor:'black'}}).addTo(lsoa_map);
-  });
 
   $.get("lsoa11_details.csv", function(d){Papa.parse(d, {
     header: true,
@@ -209,8 +214,8 @@ $(function() {
 
 
   // Fetch LSOA GeoJSON
-  $.getJSON("lsoa11_boundaries.geojson", boundaries_loaded);
-  $.getJSON("lsoa11_nearest_road_points.geojson", points_loaded);
+  $.getJSON("https://raw.githubusercontent.com/stupidpupil/wales_lsoa_trip_points/points-releases/lsoa11_boundaries.geojson", boundaries_loaded);
+  $.getJSON("https://raw.githubusercontent.com/stupidpupil/wales_lsoa_trip_points/points-releases/lsoa11_nearest_road_points.geojson", points_loaded);
   $.getJSON(matrices_root + "index.json", matrices_index_loaded);
 
 })
