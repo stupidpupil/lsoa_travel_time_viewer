@@ -77,9 +77,13 @@ var matrices_index_loaded = function (matrices_index_data) {
   $("#matrix_chooser").empty();
 
   matrix_radios = matrices_index.matrices.map( (e,i) => 
-    $("<div class='matrix_choice'><input type='radio' id='matrix_radio"+i+"'" +
-      "name='matrix' value='"+i+"'>"+
-      "<label for='matrix_radio"+i+"'>" + e.name + "</label></div>")
+    {if(e.time_ref_type == 'arrive_by'){
+      return($("<div class='matrix_choice'><input type='radio' id='matrix_radio"+i+"'" +
+        "name='matrix' value='"+i+"'>"+
+        "<label for='matrix_radio"+i+"'>" + e.name + "</label></div>"))
+    }else{
+      return($())
+    }}
     );
 
   $("#matrix_chooser").append(matrix_radios);
