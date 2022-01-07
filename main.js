@@ -9,7 +9,7 @@ var matrix_details;
 var travel_time_matrix;
 var destination_lsoa11cd = "W01001943";
 
-var matrices_root = "https://raw.githubusercontent.com/stupidpupil/wales_ish_r5r_runner/matrix-releases/";
+var matrices_root = "https://stupidpupil.github.io/wales_ish_r5r_runner/";
 
 var get_travel_time_for_origin = function (origin_id) {
 
