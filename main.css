@@ -43,7 +43,7 @@ a:visited {
 
 @keyframes pulse_opacity { from { opacity: 100%; } to { opacity: 20%; }  }
 
-.matrix_choice input:disabled:checked{
+.matrix_choice input.loading{
   animation: 0.5s ease-out 0s infinite alternate pulse_opacity;
 }
 

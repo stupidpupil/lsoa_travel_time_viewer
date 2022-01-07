@@ -86,7 +86,7 @@ var matrices_index_loaded = function (matrices_index_data) {
   matrix_radios = matrices_index.matrices.map( (e,i) => 
     {if(e.time_ref_type == 'arrive_by'){
       return($("<div class='matrix_choice'><input type='radio' id='matrix_radio"+i+"'" +
-        "name='matrix' value='"+i+"'>"+
+        "name='matrix' value='"+i+"' data-path='"+e.path+"'>"+
         "<label for='matrix_radio"+i+"'>" + e.name + "</label></div>"))
     }else{
       return($())
@@ -101,7 +101,7 @@ var matrices_index_loaded = function (matrices_index_data) {
 
 $(function(){
   $("#matrix_chooser").change(function(evt){
-    $("input[name='matrix']").prop('disabled', true);
+    //$("input[name='matrix']").prop('disabled', true);
     var i = $("input[name='matrix']:checked").val();
     travel_time_matrix = null;
     update_destination_col();
@@ -110,6 +110,7 @@ $(function(){
 
     matrix_details = matrices_index.matrices[i];
     $("#download_matrix").attr('href', matrices_root+ matrix_details.path);
+
 
     draw_travel_time_scale();
     fetch_and_load_travel_time_matrix(matrix_details.path);
@@ -124,31 +125,37 @@ $(function(){
 var fetch_and_load_travel_time_matrix = function(path){
 
   if(matrices_cache[path]){
-    return travel_time_matrix_loaded(matrices_cache[path]);
+    return travel_time_matrix_loaded(matrices_cache[path], path);
   }
 
-  $.get(matrices_root + path, travel_time_matrix_fetched);
+  $("input[data-path='"+path+"']").addClass('loading');
+
+  $.get(matrices_root + path, dat => travel_time_matrix_fetched(dat, path));
 }
 
-var travel_time_matrix_loaded = function(travel_time_matrix_results){
+var travel_time_matrix_loaded = function(travel_time_matrix_results, matrix_path){
 
-  if(matrices_cache[matrix_details.path] == null){
-    matrices_cache[matrix_details.path] = travel_time_matrix_results;
+  if(matrices_cache[matrix_path] == null){
+    matrices_cache[matrix_path] = travel_time_matrix_results;
   }
 
-  travel_time_matrix = travel_time_matrix_results;
-  update_destination_col();
-  lsoa_boundaries_layer.resetStyle();
-  lsoa_points_layer.resetStyle();
-  $("input[name='matrix']").prop('disabled', false);
+  if(matrix_details.path == matrix_path){
+    travel_time_matrix = travel_time_matrix_results;
+    update_destination_col();
+    lsoa_boundaries_layer.resetStyle();
+    lsoa_points_layer.resetStyle();    
+  }
+
+  $("input[data-path='"+matrix_path+"']").removeClass('loading');
+
 }
 
-var travel_time_matrix_fetched = function(travel_time_matrix_data){
+var travel_time_matrix_fetched = function(travel_time_matrix_data, matrix_path){
   Papa.parse(travel_time_matrix_data, {
     worker: true,
     fastMode: true,
     comments: '#',
-    complete: travel_time_matrix_loaded
+    complete: (res => travel_time_matrix_loaded(res, matrix_path))
   });
 }
 
