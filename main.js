@@ -8,8 +8,26 @@ var matrices_cache = {};
 var matrix_details;
 var travel_time_matrix;
 var destination_lsoa11cd = "W01001943";
+var destination_col = {};
 
 var matrices_root = "https://stupidpupil.github.io/wales_ish_r5r_runner/";
+
+var update_destination_col = function (){
+
+  destination_col = {};
+
+  if(travel_time_matrix == null){
+    return false;
+  }
+
+  var destination_index = travel_time_matrix.data[0].indexOf(destination_lsoa11cd);
+  travel_time_matrix.data.forEach( row => {
+    if(row[0] == 'from_id'){
+      return false;
+    }
+    destination_col[row[0]] = parseInt(row[destination_index], 10);
+  });
+}
 
 var get_travel_time_for_origin = function (origin_id) {
 
@@ -17,23 +35,11 @@ var get_travel_time_for_origin = function (origin_id) {
     return 0;
   }
 
-  if(travel_time_matrix == null){
-    return NaN;
+  if(destination_col[origin_id]){
+    return destination_col[origin_id];
   }
 
-  var destination_index = travel_time_matrix.data[0].indexOf(destination_lsoa11cd);
-
-  if(destination_index ==  null){
-    return NaN;
-  }
-
-  var origin_row = travel_time_matrix.data.find(r => r[0] == origin_id);
-
-  if(origin_row == null){
-    return NaN;
-  }
-
-  return origin_row[destination_index];
+  return NaN;
 }
 
 var lsoa_points_style = function (feature) {
@@ -57,6 +63,7 @@ var lsoa_boundaries_style = function (feature) {
 var lsoa_click = function (evt){
   destination_lsoa11cd = evt.target.feature.properties.LSOA11CD;
   update_lsoa11_details();
+  update_destination_col();
   lsoa_boundaries_layer.resetStyle();
   lsoa_points_layer.resetStyle();
 }
@@ -97,6 +104,7 @@ $(function(){
     $("input[name='matrix']").prop('disabled', true);
     var i = $("input[name='matrix']:checked").val();
     travel_time_matrix = null;
+    update_destination_col();
     lsoa_boundaries_layer.resetStyle();
     lsoa_points_layer.resetStyle();
 
@@ -129,6 +137,7 @@ var travel_time_matrix_loaded = function(travel_time_matrix_results){
   }
 
   travel_time_matrix = travel_time_matrix_results;
+  update_destination_col();
   lsoa_boundaries_layer.resetStyle();
   lsoa_points_layer.resetStyle();
   $("input[name='matrix']").prop('disabled', false);
@@ -137,7 +146,8 @@ var travel_time_matrix_loaded = function(travel_time_matrix_results){
 var travel_time_matrix_fetched = function(travel_time_matrix_data){
   Papa.parse(travel_time_matrix_data, {
     worker: true,
-    dynamicTyping: true,
+    fastMode: true,
+    comments: '#',
     complete: travel_time_matrix_loaded
   });
 }
