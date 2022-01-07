@@ -12,6 +12,13 @@ var destination_col = {};
 
 var matrices_root = "https://stupidpupil.github.io/wales_ish_r5r_runner/";
 
+
+var update_map_styles = function(){
+  update_destination_col();
+  lsoa_boundaries_layer.resetStyle();
+  lsoa_points_layer.resetStyle();   
+}
+
 var update_destination_col = function (){
 
   destination_col = {};
@@ -63,9 +70,7 @@ var lsoa_boundaries_style = function (feature) {
 var lsoa_click = function (evt){
   destination_lsoa11cd = evt.target.feature.properties.LSOA11CD;
   update_lsoa11_details();
-  update_destination_col();
-  lsoa_boundaries_layer.resetStyle();
-  lsoa_points_layer.resetStyle();
+  update_map_styles();
 }
 
 var boundaries_loaded = function(boundaries_data){
@@ -104,9 +109,7 @@ $(function(){
     //$("input[name='matrix']").prop('disabled', true);
     var i = $("input[name='matrix']:checked").val();
     travel_time_matrix = null;
-    update_destination_col();
-    lsoa_boundaries_layer.resetStyle();
-    lsoa_points_layer.resetStyle();
+    update_map_styles();
 
     matrix_details = matrices_index.matrices[i];
     $("#download_matrix").attr('href', matrices_root+ matrix_details.path);
@@ -125,25 +128,26 @@ $(function(){
 var fetch_and_load_travel_time_matrix = function(path){
 
   if(matrices_cache[path]){
-    return travel_time_matrix_loaded(matrices_cache[path], path);
+    if(matrices_cache[path] != 'loading'){ // HACK
+      return travel_time_matrix_loaded(matrices_cache[path], path);      
+    }
   }
 
   $("input[data-path='"+path+"']").addClass('loading');
 
+  matrices_cache[path] = 'loading';
   $.get(matrices_root + path, dat => travel_time_matrix_fetched(dat, path));
 }
 
 var travel_time_matrix_loaded = function(travel_time_matrix_results, matrix_path){
 
-  if(matrices_cache[matrix_path] == null){
+  if(matrices_cache[matrix_path] == 'loading'){
     matrices_cache[matrix_path] = travel_time_matrix_results;
   }
 
   if(matrix_details.path == matrix_path){
     travel_time_matrix = travel_time_matrix_results;
-    update_destination_col();
-    lsoa_boundaries_layer.resetStyle();
-    lsoa_points_layer.resetStyle();    
+    update_map_styles(); 
   }
 
   $("input[data-path='"+matrix_path+"']").removeClass('loading');
