@@ -137,7 +137,7 @@ var fetch_and_load_travel_time_matrix = function(path){
 
   matrices_cache[path] = 'loading';
   
-  if(clicky){
+  if(clicky != null){
     clicky.log('#'+path, "Load Travel Time Matrix")
   }
   
