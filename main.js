@@ -137,8 +137,10 @@ var fetch_and_load_travel_time_matrix = function(path){
 
   matrices_cache[path] = 'loading';
   
-  if(clicky != null){
+  try{
     clicky.log('#'+path, "Load Travel Time Matrix")
+  }
+  catch(e){
   }
   
   $.get(matrices_root + path, dat => travel_time_matrix_fetched(dat, path));
