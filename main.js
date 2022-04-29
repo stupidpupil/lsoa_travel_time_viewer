@@ -136,6 +136,7 @@ var fetch_and_load_travel_time_matrix = function(path){
   $("input[data-path='"+path+"']").addClass('loading');
 
   matrices_cache[path] = 'loading';
+  clicky.log('#'+path, "Load Travel Time Matrix")
   $.get(matrices_root + path, dat => travel_time_matrix_fetched(dat, path));
 }
 
