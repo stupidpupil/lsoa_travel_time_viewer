@@ -89,7 +89,7 @@ var matrices_index_loaded = function (matrices_index_data) {
   $("#matrix_chooser").empty();
 
   matrix_radios = matrices_index.matrices.map( (e,i) => 
-    {if(e.time_ref_type == 'arrive_by'){
+    {if(e.time_ref_type == 'arrive_by' || e.time_ref_type == 'depart_between_quantile'){
       return($("<div class='matrix_choice'><input type='radio' id='matrix_radio"+i+"'" +
         "name='matrix' value='"+i+"' data-path='"+e.path+"'>"+
         "<label for='matrix_radio"+i+"'>" + e.name + "</label></div>"))

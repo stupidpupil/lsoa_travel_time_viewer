@@ -54,9 +54,27 @@ var draw_travel_time_scale = function(){
   var ref_time = luxon.DateTime.fromISO(matrix_details.time_ref);
   var ref_type = matrix_details.time_ref_type;
 
-  $("#travel_time_scale_header").empty().append("Leave at…");
-  $("#travel_time_scale_midder").empty().append("to get to");
-  $("#travel_time_scale_footer").empty().append("by "+ref_time.toLocaleString(luxon.DateTime.TIME_SIMPLE));
+
+  if (ref_type == "arrive_by"){
+    $("#travel_time_scale_header").empty().append("Leave at…");
+    $("#travel_time_scale_midder").empty().append("to get to");
+    $("#travel_time_scale_footer").empty().append("by "+ref_time.toLocaleString(luxon.DateTime.TIME_SIMPLE));
+    $("#scale_choice_time").prop("disabled", false)
+  }
+
+  if(ref_type == "depart_between_quantile"){
+    var ref_time_start = luxon.DateTime.fromISO(matrix_details.time_ref_start);
+    var ref_time_end = luxon.DateTime.fromISO(matrix_details.time_ref_end);
+
+    $("#travel_time_scale_header").empty().append(Math.round(matrix_details.quantile*100) + "% of the time <br>arrive within…");
+    $("#travel_time_scale_midder").empty().append("at")
+    $("#travel_time_scale_footer").empty().append("leaving between <br>" + 
+      ref_time_start.toLocaleString(luxon.DateTime.TIME_SIMPLE) + "-" + ref_time_end.toLocaleString(luxon.DateTime.TIME_SIMPLE)) ;
+
+    scale_choice = 'period'
+    $("#scale_choice_period").prop("checked", true)
+    $("#scale_choice_time").prop("disabled", true)
+  }
 
   var contrastColour = function(r){
     if(r.contrast_colour){
